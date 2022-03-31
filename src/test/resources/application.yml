@@ -1,0 +1,47 @@
+server:
+  port: 8080
+  tomcat:
+    accesslog:
+      directory: /var/lib/logs/
+      enabled: true
+      prefix: star_be_shipment_service_access_log
+      pattern: "%{X-Forwarded-For}i %U %q %t %b %p %T %{User-agent}i"
+      rotate: true
+
+spring:
+  application:
+    name: star-be-shipment-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/star_shipment_db?useSSL=false
+    username: root
+    password: "12345678"
+  jpa:
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.MySQL8InnoDBDialect
+    properties:
+      hibernate:
+        use_sql_comments: false
+        format_sql: true
+        type: trace
+        enable_lazy_load_no_trans: true
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+
+logging:
+  level:
+    org.springframework.web: DEBUG
+    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+    org.springframework.security: INFO
+    com.apptcom.kidstar: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    file: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"
+    console: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"
+  file: /usr/local/tomcat/logs/star-be-shipment-service.log
+
+
+http:
+  timeout: 5000
+  
+    

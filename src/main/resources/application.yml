@@ -1,0 +1,83 @@
+server:
+  port: 8080
+  tomcat:
+    accesslog:
+      directory: /var/lib/logs/
+      enabled: true
+      prefix: star_be_shipment_service_access_log
+      pattern: "%{X-Forwarded-For}i %U %q %t %b %p %T %{User-agent}i"
+      rotate: true
+
+spring:
+  application:
+    name: star-be-shipment-service
+  security:
+    user:
+      name: admin
+      password: 12345678
+  boot:
+    admin:
+      client:
+        enabled: false
+        url: http://localhost:9000/
+        username: ${spring.security.user.name}
+        password: ${spring.security.user.password}
+        instance:
+          service-url: http://localhost:8081
+          metadata:
+              user:
+               name: ${spring.security.user.name}
+               password: ${spring.security.user.password}
+  jpa:
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.MySQL8InnoDBDialect
+    properties:
+      hibernate:
+        use_sql_comments: false
+        format_sql: true
+        type: trace
+        enable_lazy_load_no_trans: true
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+
+logging:
+  level:
+    org.springframework.web: DEBUG
+    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+    org.springframework.security: INFO
+    com.apptcom.kidstar: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    file: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"
+    console: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"
+  file: /usr/local/tomcat/logs/star-be-shipment-service.log
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: 
+          - "*"
+  endpoint:
+    health:
+      show-details: always
+  trace:
+    http:
+      tracebody: true
+      include:
+      - response-headers
+      - time-taken
+
+http:
+  timeout: 5000
+  
+springfox:
+  documentation:
+    auto-startup: true
+
+urls:
+  user-service: "http://{somedomain}.starapp.com:8081/api/json/users"
+  language-service: "http://{somedomain}.starapp.com:8002/api/json/languages"
+
+
